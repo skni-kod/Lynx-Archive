@@ -18,6 +18,12 @@ Do not use VS integrated cmake generator, instead of that please install cmake f
 6. Wait for output message "Configuring done" (down section of the window)
 7. Now you can click on "Generate" and start your IDE via "Open Project"
 
+## Coding
+ 
+**Note** do not create files by project explorer in IDE(especially in stupid Visual Studio)
+If you know what doing keep going, but remember missing or broken paths to files can cause future problem for other people.
+After insertion/deletion of files please rerun cmake for your develop environment before compiling. 
+
 ## Issues
 For IDE configuration issues please contact [Jakub Przystasz](https://github.com/jakubprzystasz)
 
