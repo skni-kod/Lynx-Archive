@@ -6,4 +6,6 @@ build/
 .idea/
 CMakeFiles/
 *.dir/
-cmake-build-debug
+cmake-build-debug/
+*.vcxproj*
+*.cmake

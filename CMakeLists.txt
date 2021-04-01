@@ -16,13 +16,10 @@ include(${CMAKE_SOURCE_DIR}/CMake/RedirectOutputTo.cmake)
 include(${CMAKE_SOURCE_DIR}/CMake/CompileFlags.cmake)
 include(${CMAKE_SOURCE_DIR}/CMake/CreateSymlink.cmake)
 include(${CMAKE_SOURCE_DIR}/CMake/GroupSources.cmake)
-include(${CMAKE_SOURCE_DIR}/CMake/VisualStudioVersionCheck.cmake)
+include(${CMAKE_SOURCE_DIR}/CMake/LinkStaticLib.cmake)
 
 file(MAKE_DIRECTORY "bin")
 RedirectOutputTo("bin")
-
-
-option(BUILD_EXAMPLES "Build examples" ON)
 
 ### TODO:
 # May we use it in the future
@@ -122,11 +119,13 @@ target_sources(Launcher PRIVATE ${LAUNCHER_SRC})
 GroupSources("src/launcher" "src/launcher" "Source Files")
 
 
+
+## Resources symlink
 message("Creating symbolic link to resources directory")
 #Create symlink to resources in binary dir
 CreateSymlink(${PROJECT_SOURCE_DIR}/bin/resources ${PROJECT_SOURCE_DIR}/resources)
 
-
+## External shared libraries 
 message("Copy external library to bin")
 #copy external dlls to bin folder
 file(GLOB_RECURSE DLLS RELATIVE ${PROJECT_SOURCE_DIR}/dll
@@ -143,3 +142,8 @@ foreach(DLL ${DLLS})
     file(COPY ${DLL} DESTINATION ${PROJECT_SOURCE_DIR}/bin/)
   endif(WIN32)
 endforeach(DLL)
+
+
+
+## Static libraries
+LinkStaticLib(Engine)
