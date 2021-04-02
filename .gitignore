@@ -11,3 +11,4 @@ cmake-build-debug/
 *.cmake
 Testing/
 *.sln
+CMakeSettings.json
