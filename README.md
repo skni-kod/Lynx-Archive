@@ -27,6 +27,9 @@ Make sure that you have installed MSVC++ compiler.
 3. Wait until button with bug icon gets green, Enjoy.
 4. If bug is not getting green right click on CMakeLists.txt and use "Reload CMake project"
 
+### Building examples
+When there is no use building examples, you can switch them off by setting variable "BUILD_EXAMPLES" to OFF in CMakeLists.txt file(row ~12) 
+
 ## Coding
  
 **Note** do not create files by project explorer in IDE(especially in stupid Visual Studio). If working in CLion do not use option "Add to targets".  
