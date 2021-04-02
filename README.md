@@ -8,7 +8,7 @@ Description...
 - ✨Magic ✨
 
 ## IDE setup
-For now cmake is tested under Windows 10 with Visual Studio 2019 and CLion 2020.3  
+For now cmake is tested under Windows 10 with Visual Studio 2019, Visual Studio Code and CLion 2020.3  
 **Note** Do not use VS integrated cmake generator, instead of that please install cmake from [here](https://github.com/Kitware/CMake/releases/)
 
 ### Installing MVC++ 
