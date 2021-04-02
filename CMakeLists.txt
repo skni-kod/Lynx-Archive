@@ -1,22 +1,22 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
-if(NOT DEFINED ${CMAKE_GENERATOR_PLATFORM})
-  set(CMAKE_GENERATOR_PLATFORM "Win32")
-  message("Not defined architecture - using default x86")
-endif(NOT DEFINED ${CMAKE_GENERATOR_PLATFORM})
-
 set(CMAKE_SUPPRESS_REGENERATION true)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_STANDARD 11)
+
 project("Lynx engine" VERSION 1.0)
 
+option(BUILD_EXAMPLES "Build examples" ON)
 
 include(${CMAKE_SOURCE_DIR}/CMake/RedirectOutputTo.cmake)
 include(${CMAKE_SOURCE_DIR}/CMake/CompileFlags.cmake)
 include(${CMAKE_SOURCE_DIR}/CMake/CreateSymlink.cmake)
 include(${CMAKE_SOURCE_DIR}/CMake/GroupSources.cmake)
-include(${CMAKE_SOURCE_DIR}/CMake/LinkStaticLib.cmake)
+include(${CMAKE_SOURCE_DIR}/CMake/StaticLibsCompile.cmake)
+include(${CMAKE_SOURCE_DIR}/CMake/BuildExamples.cmake)
 
 file(MAKE_DIRECTORY "bin")
 RedirectOutputTo("bin")
@@ -89,7 +89,7 @@ foreach(FILE ${SRC_FILES})
   set(LAUNCHER_SRC ${LAUNCHER_SRC}  ${FILE})
 endforeach(FILE)
 
-add_executable(Launcher ${SRC_FILES})
+add_executable(Launcher WIN32 ${SRC_FILES})
 
 set(LauncherHeaders 
   ${PROJECT_SOURCE_DIR}/headers/launcher
@@ -118,6 +118,7 @@ endforeach(FILE)
 target_sources(Launcher PRIVATE ${LAUNCHER_SRC})
 GroupSources("src/launcher" "src/launcher" "Source Files")
 
+add_dependencies(Launcher Engine)
 
 
 ## Resources symlink
@@ -131,10 +132,11 @@ message("Copy external library to bin")
 file(GLOB_RECURSE DLLS RELATIVE ${PROJECT_SOURCE_DIR}/dll
   ${PROJECT_SOURCE_DIR}/dll/*.dll
   ${PROJECT_SOURCE_DIR}/dll/*.lib
-  ${PROJECT_SOURCE_DIR}/dll/*.obj
+  ${PROJECT_SOURCE_DIR}/dll/*.so
 )
 
 foreach(DLL ${DLLS})
+  message("Copy: ${DLL}")
   if(WIN32)
     file(COPY ${PROJECT_SOURCE_DIR}/dll/${DLL}
         DESTINATION ${PROJECT_SOURCE_DIR}/bin/)
@@ -146,4 +148,10 @@ endforeach(DLL)
 
 
 ## Static libraries
-LinkStaticLib(Engine)
+StaticLibsCompile(Engine)
+
+
+if(${BUILD_EXAMPLES})
+  message("Looking for examples to build")
+  BuildExamples()
+endif()

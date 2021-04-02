@@ -9,3 +9,5 @@ CMakeFiles/
 cmake-build-debug/
 *.vcxproj*
 *.cmake
+Testing/
+*.sln

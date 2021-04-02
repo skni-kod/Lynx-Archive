@@ -1,6 +1,6 @@
 if(MSVC)
 	# visual studio compile flags
-	set(CMAKE_CXX_FLAGS_DEBUG "/W3 /DDEBUG_BUILD /MDd /Zi /Od /RTC1 /GR- /MP /std:c++14")
+	set(CMAKE_CXX_FLAGS_DEBUG "/W3 /DDEBUG_BUILD /MDd /Zi /Od /RTC1 /GR /MP /std:c++14")
 	set(CMAKE_CXX_FLAGS_RELEASE "/W3 /MD /O2 /GR- /MP /std:c++14")
 else()
 	#g++ compile flags
