@@ -1,4 +1,4 @@
-![Project logo](/images/logo.png?raw=true)
+<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/project_logo.png" alt="Project Logo" height="640" width="355"/>  
 
 # Lynx Engine
 Description...
