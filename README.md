@@ -36,16 +36,14 @@ After common installation(please use default settings in installer), go to start
 
 #### Adding cmake path to PATH
 For Windows 7/8/10:
-1. Open  "This Computer" or something like that:
-![Open computer](/screenshots/.png?raw=true)
+1. Open  "This Computer" or something like that.
 2. Click on "Advanced computer settings"
-![Open computer](/screenshots/.png?raw=true)
-3. Open tab "Advanced" then click button "Environment variables"
-![Open computer](/screenshots/.png?raw=true)
-4. Find Path:
-![Open computer](/screenshots/.png?raw=true)
-5. Click New and put path to cmake:
-![Open computer](/screenshots/.png?raw=true)
+3. Open tab "Advanced" then click button "Environment variables"  
+<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/add_path_tutorial/env_vars.png" alt="Advanced settings" height="250" width="250"/>  
+4. Find Path:  
+<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/add_path_tutorial/find_path.png" alt="Find path" height="250" width="250"/>  
+5. Click New and put path to cmake:  
+<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/add_path_tutorial/add_path.png" alt="New path" height="250" width="250"/>   
 6. Save settings by clicking Ok,Apply etc.
 
 ### Configuration for Visual Studio
@@ -78,7 +76,8 @@ When tno build examples are being used, you can switch them off by setting varia
 ## Coding
 **The first rule of a good friend of Lynx - keep all files in designed structure** 
 **Note**: do not create files using project explorer in IDE - especially in Visual Studio.  
-If working in CLion you can add files via project explorer but be sure to not use option "Add to targets".
+If working in CLion you can add files via project explorer but be sure to not use option "Add to targets":
+<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/add_path_tutorial/clion_add_targets.png" alt="We don't do that here" height="250" width="250"/>  
 If you know what doing keep going, but remember missing or broken paths to files can cause future problems for other people.  
 After insertion/deletion of files please rerun cmake for your develop environment before compiling - CLion does it automatically, but (stupid) Visual Studio and Visual Studio Code doesn't.
 
