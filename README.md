@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/project_logo.png" alt="Project Logo" height="640" width="355"/>  
+<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/project_logo.png" alt="Project Logo" height="320" width="177"/>  
 
 # Lynx Engine
 Description...
@@ -76,8 +76,8 @@ When tno build examples are being used, you can switch them off by setting varia
 ## Coding
 **The first rule of a good friend of Lynx - keep all files in designed structure** 
 **Note**: do not create files using project explorer in IDE - especially in Visual Studio.  
-If working in CLion you can add files via project explorer but be sure to not use option "Add to targets":
-<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/add_path_tutorial/clion_add_targets.png" alt="We don't do that here" height="250" width="250"/>  
+If working in CLion you can add files via project explorer but be sure to not use option "Add to targets":  
+<img src="https://raw.githubusercontent.com/skni-kod/Lynx-Engine/master/images/add_path_tutorial/clion_add_targets.png" alt="We don't do that here" height="240" width="600"/>  
 If you know what doing keep going, but remember missing or broken paths to files can cause future problems for other people.  
 After insertion/deletion of files please rerun cmake for your develop environment before compiling - CLion does it automatically, but (stupid) Visual Studio and Visual Studio Code doesn't.
 
