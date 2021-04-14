@@ -8,7 +8,6 @@ CMakeFiles/
 *.dir/
 cmake-build-debug/
 *.vcxproj*
-*.cmake
 Testing/
 *.sln
 CMakeSettings.json
