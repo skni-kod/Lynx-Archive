@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>
 #include <iostream>
 #include <engine.h>
@@ -6,6 +7,7 @@
 #include "launcher.h"
 #include <io.h>
 #include <fcntl.h>
+
 
 #pragma comment (lib, "opengl32.lib")
 
@@ -87,8 +89,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
     *stdin = *hf_in;
     
     freopen("CONOUT$", "w", stdout);
+    freopen("CONIN$", "r", stdin);
 
-    printf("TEST\n");
+    char* print_string = (char*)malloc(100);
+    scanf("%s",print_string);
+    printf(print_string);
 
     //load update and render loops?
     HINSTANCE hGetProcIDDLL = LoadLibrary("Engine.dll");
