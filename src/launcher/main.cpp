@@ -15,6 +15,12 @@ HGLRC GLContext;
 
 HDC WinHandleDC;
 
+typedef int(__stdcall* update_f)();
+
+typedef void(__stdcall* func_f)();
+
+
+
 void DrawTriangle()
 {
     glIndexi(1);
@@ -27,8 +33,6 @@ void DrawTriangle()
     glColor3f(0.0f, 0.0f, 1.0f);
     glVertex2i(1, -1);
 }
-
-typedef int(__stdcall* update_f)();
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
@@ -90,10 +94,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
     
     freopen("CONOUT$", "w", stdout);
     freopen("CONIN$", "r", stdin);
-
-    char* print_string = (char*)malloc(100);
-    scanf("%s",print_string);
-    printf(print_string);
 
     //load update and render loops?
     HINSTANCE hGetProcIDDLL = LoadLibrary("Engine.dll");
@@ -192,41 +192,3 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 quit:
     return 0;
 }
-
-/*
-DLL loading
-#include <windows.h>
-#include <iostream>
-
-Define a function pointer for our imported
- * function.
- * This reads as "introduce the new type f_funci as the type:
- *                pointer to a function returning an int and
- *                taking no arguments.
- *
- * Make sure to use matching calling convention (__cdecl, __stdcall, ...)
- * with the exported function. __stdcall is the convention used by the WinAPI
-
-typedef int(__stdcall* f_funci)();
-
-int main()
-{
-    HINSTANCE hGetProcIDDLL = LoadLibrary("Engine.dll");
-
-    if (!hGetProcIDDLL) {
-        std::cout << "could not load the dynamic library" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    // resolve function address here
-    f_funci funci = (f_funci)GetProcAddress(hGetProcIDDLL, "dupa");
-    if (!funci) {
-        std::cout << "could not locate the function" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    std::cout << "funci() returned " << funci() << std::endl;
-
-    return EXIT_SUCCESS;
-}
-*/
