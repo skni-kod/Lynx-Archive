@@ -20,7 +20,6 @@ typedef int(__stdcall* update_f)();
 typedef void(__stdcall* func_f)();
 
 
-
 void DrawTriangle()
 {
     glIndexi(1);
@@ -99,6 +98,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
     HINSTANCE hGetProcIDDLL = LoadLibrary("Engine.dll");
     
     update_f update = (update_f)GetProcAddress(hGetProcIDDLL, "update");
+//    func_f func = (func_f)GetProcAddress(hGetProcIDDLL, "dupa");
+//
+//    if(!func)
+//        exit(-1);
+//    func();
+
     // Register the window class
     WNDCLASS WindowClass = {};
 
