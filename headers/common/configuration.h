@@ -1,1 +1,1 @@
-#define ROOT_DIR "C:/Users/jakub/Documents/GitHub/Lynx-Engine"
+#define ROOT_DIR "E:/PROJECTS/LynxEngine"

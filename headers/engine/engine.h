@@ -1,11 +1,11 @@
 #pragma once
+#include <Application/Abstract/AbstractApplication.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-	//tak wlasnie, rysiek pokazuje dupe
-	int __declspec(dllexport) __cdecl dupa();
-	void __declspec(dllexport) __cdecl update();
-#ifdef __cplusplus
-}
-#endif
+class __declspec(dllexport) CEngine
+{
+public:
+	AbstractApplication* platformApp;
+
+	void Init();
+	void Run();
+};

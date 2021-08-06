@@ -1,12 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>
 #include <iostream>
-#include <engine.h>
 #include <windows.h>
 #include <gl/GL.h>
 #include "launcher.h"
 #include <io.h>
 #include <fcntl.h>
+#include <Application/Windows/WindowsApplication.h>
 
 
 #pragma comment (lib, "opengl32.lib")
@@ -14,6 +14,10 @@
 HGLRC GLContext;
 
 HDC WinHandleDC;
+
+bool running = true;
+
+WindowsApplication* winApp = nullptr;
 
 void DrawTriangle()
 {
@@ -29,17 +33,15 @@ void DrawTriangle()
 }
 
 typedef int(__stdcall* update_f)();
+typedef int32(__stdcall* procmsg_f)(HWND hwnd, uint32 msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
     LRESULT Result = 0;
     // Message handling
     static PAINTSTRUCT ps;
-    switch (uMsg) {
-    case WM_CREATE:
+    switch (uMsg)
     {
-        break;
-    }
     case WM_DESTROY: {
         wglDeleteContext(GLContext);
         PostQuitMessage(0);
@@ -47,6 +49,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
     case WM_CLOSE: {
         DestroyWindow(hwnd);    // Closing Window
+        exit(0);
     } break;
     case WM_PAINT: {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -67,10 +70,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         glViewport(0, 0, LOWORD(lParam), HIWORD(lParam)); //Setup viewport to new size.
         PostMessage(hwnd, WM_PAINT, 0, 0);
     }
-    default: {
-        Result = DefWindowProc(hwnd, uMsg, wParam, lParam);
-    } break;
     }
+    //Ideally move everything related to windows code here.
+    Result = winApp->ProcessMessage(hwnd, uMsg, wParam, lParam);
     return Result;
 }
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
@@ -99,6 +101,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
     HINSTANCE hGetProcIDDLL = LoadLibrary("Engine.dll");
     
     update_f update = (update_f)GetProcAddress(hGetProcIDDLL, "update");
+
+    procmsg_f  = (procmsg_f)GetProcAddress(hGetProcIDDLL, "WindowsApplication::ProcessMessage");
     // Register the window class
     WNDCLASS WindowClass = {};
 
@@ -108,6 +112,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 
     // Create the window.
     RegisterClass(&WindowClass);
+
+    winApp = new WindowsApplication(hInstance, 0);
+
+    winApp->ProcessMessage()
 
     HWND WindowHandle = CreateWindowExA(
         0,                                       // Optional Window styles
@@ -123,6 +131,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
         hInstance,                               // Instance Handle
         0                                // Additional application data
     );
+
+    //TODO TESTING CODE.
+    winApp->winHandle = &WindowHandle;
 
     //TEST OPENGL
             //TODO think about how to support DirectX AND OpenGL at the same time. For now focus on OpenGL.
@@ -157,7 +168,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
     GLContext = wglCreateContext(WinHandleDC);
     //Sets created openGL context as current.
     wglMakeCurrent(WinHandleDC, GLContext);
-    //TODO (Minus) figure out why GL_VERSION define isn't working
     //MessageBoxA(0, (char*)glGetString(GL_VERSION), "OPENGL VERSION", 0);
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -169,7 +179,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
     if (WindowHandle)
     {
         MSG msg;
-        while (TRUE)
+        while (running)
         {
             while (PeekMessage(&msg, WindowHandle, 0, 0, PM_NOREMOVE))
             {
@@ -179,17 +189,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
                     DispatchMessage(&msg);
                 }
                 else {
-                    goto quit;
+                    running = false;
+                    break;
                 }
             }
+            if (!running) break;
             //Call Engine and game code here
             update();
 
         }
     }
-
-//TODO Reconsider how it should be done properly.
-quit:
     return 0;
 }
 
