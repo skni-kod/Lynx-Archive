@@ -5,7 +5,8 @@ if(MSVC)
 else()
 	#g++ compile flags
 	set(CMAKE_CXX_FLAGS "-Wall -std=c++14 -msse2 -fno-rtti -pipe")
-	set(CMAKE_CXX_FLAGS_DEBUG "-Wall -std=c++14 -msse2 -g -fno-rtti -pipe -Wextra -Werror -pedantic ")
+	set(CMAKE_CXX_FLAGS_DEBUG "-Wall -std=c++14 -msse2 -fno-rtti -pipe")
+	#   -g -Wextra -Werror  -pedantic ")
 	set(CMAKE_CXX_FLAGS_RELEASE "-Wall -std=c++14 -O3 -msse2 -fno-rtti -pipe")
 
 	if(CMAKE_BUILD_TYPE STREQUAL "Debug")

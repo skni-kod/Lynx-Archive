@@ -9,6 +9,9 @@ set(CMAKE_C_STANDARD 11)
 
 project("Lynx engine" VERSION 1.0)
 
+find_package(ECM REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+
 option(BUILD_EXAMPLES "Build examples" ON)
 
 include(${CMAKE_SOURCE_DIR}/CMake/RedirectOutputTo.cmake)
@@ -73,7 +76,6 @@ endforeach(FILE)
 target_sources(Engine PRIVATE ${ENGINE_SRC})
 GroupSources("src/engine" "src/engine" "Source Files")
 
-
 ### Launcher
 #one executable - launcher for engine and game(s)
 set(LAUNCHER_DIR ${PROJECT_SOURCE_DIR}/src/launcher)
@@ -89,7 +91,7 @@ foreach(FILE ${SRC_FILES})
   set(LAUNCHER_SRC ${LAUNCHER_SRC}  ${FILE})
 endforeach(FILE)
 
-add_executable(Launcher WIN32 ${SRC_FILES})
+add_executable(Launcher ${SRC_FILES})
 
 set(LauncherHeaders 
   ${PROJECT_SOURCE_DIR}/headers/launcher
@@ -120,8 +122,23 @@ GroupSources("src/launcher" "src/launcher" "Source Files")
 
 add_dependencies(Launcher Engine)
 
+find_package(X11)
+if(X11_FOUND)
+  message("Found X11 libraries")
+  target_include_directories(Launcher PRIVATE ${X11_INCLUDE_DIR})
+  target_link_directories(Launcher PRIVATE ${X11_LIBRARIES})
+  target_link_libraries(Launcher ${X11_LIBRARIES})
+endif()
 
-## Resources symlink
+find_package(X11_XCB)
+if(X11_XCB_FOUND)
+  message("Found X11_XCB libraries")
+  target_include_directories(Launcher PRIVATE ${X11_XCB_INCLUDE_DIR})
+  target_link_directories(Launcher PRIVATE ${X11_XCB_LIBRARIES})
+  target_link_libraries(Launcher ${X11_XCB_LIBRARIES})
+endif()
+
+  ## Resources symlink
 message("Creating symbolic link to resources directory")
 #Create symlink to resources in binary dir
 CreateSymlink(${PROJECT_SOURCE_DIR}/bin/resources ${PROJECT_SOURCE_DIR}/resources)

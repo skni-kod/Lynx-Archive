@@ -1,115 +1,118 @@
-#include <windows.h>
-#include <iostream>
-#include <engine.h>
-#include <windows.h>
-#include "launcher.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/time.h>
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+#include <xcb/xcb.h>
+#include <X11/Xlib.h>
 
-    LRESULT Result = 0;
-    // Message handling
-    switch (uMsg) {
-    case WM_DESTROY: {
-        PostQuitMessage(0);
-    } break;
+double
+get_time(void)
+{
+  struct timeval timev;
 
-    case WM_CLOSE: {
-        DestroyWindow(hwnd);    // Closing Window
-    } break;
+  gettimeofday(&timev, NULL);
 
-    case WM_PAINT: {
-
-        PAINTSTRUCT PaintStruct;
-        HDC hdc = BeginPaint(hwnd, &PaintStruct);
-
-        FillRect(hdc, &PaintStruct.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-
-        EndPaint(hwnd, &PaintStruct);
-    } break;
-
-    default: {
-        Result = DefWindowProc(hwnd, uMsg, wParam, lParam);
-    } break;
-    }
-    return Result;
+  return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
 }
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
-
-    // Register the window class
-    WNDCLASS WindowClass = {};
-
-    WindowClass.lpfnWndProc = WindowProc;
-    WindowClass.hInstance = hInstance;
-    WindowClass.lpszClassName = "LynxEngineClass";
-
-    // Create the window.
-    RegisterClass(&WindowClass);
-
-    HWND WindowHandle = CreateWindowExA(
-        0,                                       // Optional Window styles
-        WindowClass.lpszClassName,               // Window Class
-        WINDOW_TITLE,                           // Window text
-        WS_OVERLAPPEDWINDOW | WS_VISIBLE,          // Window Style
-        CW_USEDEFAULT,                           // Pos X
-        CW_USEDEFAULT,                           // Pos Y
-        CW_USEDEFAULT,                           // Width
-        CW_USEDEFAULT,                           // Height
-        0,                                        // Parent Window
-        0,                                // Menu
-        hInstance,                               // Instance Handle
-        0                                // Additional application data
-    );
-
-    // Message Procedure
-    if (WindowHandle) {
-        while (TRUE) {
-            MSG Message;
-            if (GetMessage(&Message, nullptr, 0, 0) > 0) {
-                TranslateMessage(&Message);
-                DispatchMessage(&Message);
-            }
-            else {
-                break;
-            }
-        }
-    }
-    return 0;
-}
-
-/*
-DLL loading
-#include <windows.h>
-#include <iostream>
-
-Define a function pointer for our imported
- * function.
- * This reads as "introduce the new type f_funci as the type:
- *                pointer to a function returning an int and
- *                taking no arguments.
- *
- * Make sure to use matching calling convention (__cdecl, __stdcall, ...)
- * with the exported function. __stdcall is the convention used by the WinAPI
-
-typedef int(__stdcall* f_funci)();
 
 int main()
 {
-    HINSTANCE hGetProcIDDLL = LoadLibrary("Engine.dll");
+  xcb_connection_t *c;
+  xcb_atom_t *atoms;
+  xcb_intern_atom_cookie_t *cs;
+  char **names;
+  int count;
+  int i;
+  double start;
+  double end;
+  double diff;
 
-    if (!hGetProcIDDLL) {
-        std::cout << "could not load the dynamic library" << std::endl;
-        return EXIT_FAILURE;
-    }
+  /* Xlib */
+  Display *disp;
+  Atom *atoms_x;
+  double diff_x;
 
-    // resolve function address here
-    f_funci funci = (f_funci)GetProcAddress(hGetProcIDDLL, "dupa");
-    if (!funci) {
-        std::cout << "could not locate the function" << std::endl;
-        return EXIT_FAILURE;
-    }
+  c = xcb_connect(NULL, NULL);
 
-    std::cout << "funci() returned " << funci() << std::endl;
+  count = 500;
+  atoms = (xcb_atom_t *)malloc(count * sizeof(atoms));
+  names = (char **)malloc(count * sizeof(char *));
 
-    return EXIT_SUCCESS;
+  /* init names */
+  for (i = 0; i < count; ++i)
+  {
+    char buf[100];
+
+    sprintf(buf, "NAME%d", i);
+    names[i] = strdup(buf);
+  }
+
+  /* bad use */
+  start = get_time();
+
+  for (i = 0; i < count; ++i)
+    atoms[i] = xcb_intern_atom_reply(c,
+                                     xcb_intern_atom(c,
+                                                     0,
+                                                     strlen(names[i]),
+                                                     names[i]),
+                                     NULL)
+                   ->atom;
+
+  end = get_time();
+  diff = end - start;
+  printf("bad use time  : %f\n", diff);
+
+  /* good use */
+  start = get_time();
+
+  cs = (xcb_intern_atom_cookie_t *)malloc(count * sizeof(xcb_intern_atom_cookie_t));
+  for (i = 0; i < count; ++i)
+    cs[i] = xcb_intern_atom(c, 0, strlen(names[i]), names[i]);
+
+  for (i = 0; i < count; ++i)
+  {
+    xcb_intern_atom_reply_t *r;
+
+    r = xcb_intern_atom_reply(c, cs[i], 0);
+    if (r)
+      atoms[i] = r->atom;
+    free(r);
+  }
+
+  end = get_time();
+  printf("good use time : %f\n", end - start);
+  printf("ratio         : %f\n", diff / (end - start));
+  diff = end - start;
+
+  /* free var */
+  free(atoms);
+  free(cs);
+
+  xcb_disconnect(c);
+
+  /* Xlib */
+  disp = XOpenDisplay(getenv("DISPLAY"));
+
+  atoms_x = (Atom *)malloc(count * sizeof(atoms_x));
+
+  start = get_time();
+
+  for (i = 0; i < count; ++i)
+    atoms_x[i] = XInternAtom(disp, names[i], 0);
+
+  end = get_time();
+  diff_x = end - start;
+  printf("Xlib use time : %f\n", diff_x);
+  printf("ratio         : %f\n", diff_x / diff);
+
+  free(atoms_x);
+  for (i = 0; i < count; ++i)
+    free(names[i]);
+  free(names);
+
+  XCloseDisplay(disp);
+
+  return 0;
 }
-*/
