@@ -81,6 +81,21 @@ If working in CLion you can add files via project explorer but be sure to not us
 If you know what doing keep going, but remember missing or broken paths to files can cause future problems for other people.  
 After insertion/deletion of files please rerun cmake for your develop environment before compiling - CLion does it automatically, but (stupid) Visual Studio and Visual Studio Code doesn't.
 
+## Developing under Linux and X11
+Required packages(on eg. of Debian):
+- extra-cmake-modules
+- pkg-config
+- libx11-dev
+- xcb
+- libx11-xcb-dev
+- xorg 
+- xserver-xorg
+- xbase-clients
+- xfonts-base
+- mesa-utils
+- driconf
+- xinput 
+
 ## Issues
 For IDE configuration issues please contact <a href="https://github.com/jakubprzystasz" target="_blank">Jakub Przystasz</a>  
 To avoid issues use path for repository without non ascii characters, white spaces etc.
