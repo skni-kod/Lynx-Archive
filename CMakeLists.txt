@@ -138,7 +138,15 @@ if(X11_XCB_FOUND)
   target_link_libraries(Launcher ${X11_XCB_LIBRARIES})
 endif()
 
-  ## Resources symlink
+find_package(XCB)
+if(XCB_FOUND)
+  message("Found XCB libraries")
+  target_include_directories(Launcher PRIVATE ${XCB_INCLUDE_DIR})
+  target_link_directories(Launcher PRIVATE ${XCB_LIBRARIES})
+  target_link_libraries(Launcher ${XCB_LIBRARIES})
+endif()
+
+## Resources symlink
 message("Creating symbolic link to resources directory")
 #Create symlink to resources in binary dir
 CreateSymlink(${PROJECT_SOURCE_DIR}/bin/resources ${PROJECT_SOURCE_DIR}/resources)

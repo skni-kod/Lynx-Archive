@@ -4,7 +4,17 @@
 #include <sys/time.h>
 
 #include <xcb/xcb.h>
+
 #include <X11/Xlib.h>
+
+
+/*
+  To use it on windows 10 wsl you need to install:
+  X's server for windows eg: https://sourceforge.net/projects/xming/
+  in wsl shell where you run program, execute that command:
+  export DISPLAY=:0
+  and before start you need to open X's server session on your computer!
+*/
 
 double
 get_time(void)
